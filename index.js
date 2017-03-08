@@ -18,7 +18,6 @@ var Notifications = {
 	onNotification: false,
   onRemoteFetch: false,
 	isLoaded: false,
-	hasPoppedInitialNotification: false,
 
 	isPermissionsRequestPending: false,
 
@@ -88,14 +87,12 @@ Notifications.configure = function(options: Object) {
 		this.isLoaded = true;
 	}
 
-	if ( this.hasPoppedInitialNotification === false &&
-			( options.popInitialNotification === undefined || options.popInitialNotification === true ) ) {
+	if (options.popInitialNotification === undefined || options.popInitialNotification === true) {
 		this.popInitialNotification(function(firstNotification) {
 			if ( firstNotification !== null ) {
 				this._onNotification(firstNotification, true);
 			}
 		}.bind(this));
-		this.hasPoppedInitialNotification = true;
 	}
 
 	if ( options.requestPermissions !== false ) {
