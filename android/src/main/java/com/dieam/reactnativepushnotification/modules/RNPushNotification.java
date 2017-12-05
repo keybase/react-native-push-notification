@@ -195,8 +195,11 @@ public class RNPushNotification extends ReactContextBaseJavaModule implements Ac
     }
 
     @ReactMethod
-    public void clearNotification(String id) {
-        mRNPushNotificationHelper.clearNotification(id)
+    public void removeDeliveredNotification(ReadableArray identifiers) {
+        for (int i = 0; i < identifiers.size(); i++) {
+            String identifier = identifiers.getString(i);
+            mRNPushNotificationHelper.clearNotification(id)
+        }
     }
 
     @ReactMethod
