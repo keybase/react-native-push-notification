@@ -399,6 +399,13 @@ public class RNPushNotificationHelper {
         }
     }
 
+    public void clearNotification(String id) {
+        Log.i(LOG_TAG, "Clearing notification: " + id);
+
+        NotificationManager notificationManager = notificationManager();
+        notificationManager.cancel(Integer.parseInt(id));
+    }
+
     public void clearNotifications() {
         Log.i(LOG_TAG, "Clearing alerts from the notification centre");
 
