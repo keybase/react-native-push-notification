@@ -316,6 +316,11 @@ Notifications.registerNotificationActions = function() {
 	return this.callNative('registerNotificationActions', arguments)
 }
 
+Notifications.clearNotification = function() {
+	// Only available for Android
+	return this.callNative('clearNotification', arguments)
+}
+
 Notifications.clearAllNotifications = function() {
 	// Only available for Android
 	return this.callNative('clearAllNotifications', arguments)

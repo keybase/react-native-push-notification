@@ -104,6 +104,10 @@ NotificationsComponent.prototype.registerNotificationActions = function(details:
 	RNPushNotification.registerNotificationActions(details);
 }
 
+NotificationsComponent.prototype.clearNotification = function(id: string) {
+	RNPushNotification.clearNotification(id)
+}
+
 NotificationsComponent.prototype.clearAllNotifications = function() {
 	RNPushNotification.clearAllNotifications()
 }
