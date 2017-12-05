@@ -406,7 +406,7 @@ public class RNPushNotificationHelper {
         notificationManager.cancel(Integer.parseInt(id));
     }
 
-    public void clearNotifications() {
+    public void removeAllDeliveredNotifications() {
         Log.i(LOG_TAG, "Clearing alerts from the notification centre");
 
         NotificationManager notificationManager = notificationManager();
