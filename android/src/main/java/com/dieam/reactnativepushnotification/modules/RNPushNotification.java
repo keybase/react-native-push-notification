@@ -210,22 +210,25 @@ public class RNPushNotification extends ReactContextBaseJavaModule implements Ac
         WritableArray arr = Arguments.createArray();
 
         for (int i = 0; i < notifications.length; i++) {
-          StatusBarNotification n = notifications[i];
+            StatusBarNotification n = notifications[i];
 
-          WritableMap map = Arguments.createMap();
-          map.putString("identifier", Integer.toString(n.getId()));
+            WritableMap map = Arguments.createMap();
+            map.putString("identifier", Integer.toString(n.getId()));
 
-          Bundle extras = n.getNotification().extras;
+            Bundle extras = n.getNotification().extras;
 
-          CharSequence title = extras.getCharSequence(Notification.EXTRA_TITLE);
-          map.putString("title", title.toString());
+            CharSequence title = extras.getCharSequence(Notification.EXTRA_TITLE);
+            map.putString("title", title.toString());
 
-          CharSequence text = extras.getCharSequence(Notification.EXTRA_TEXT);
-          map.putString("body", text.toString());
+            CharSequence text = extras.getCharSequence(Notification.EXTRA_TEXT);
+            map.putString("body", text.toString());
 
-          // TODO: Fill in userInfo.
+            Bundle userInfo = extra.getBundle("userInfo");
+            if (userInfo != null) {
+                map.putMap("userInfo", Arguments.fromBundle(userInfo));
+            }
 
-          arr.pushMap(map);
+            arr.pushMap(map);
         }
 
         callback.invoke(arr);

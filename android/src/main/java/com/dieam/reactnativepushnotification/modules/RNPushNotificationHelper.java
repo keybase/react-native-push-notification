@@ -329,6 +329,11 @@ public class RNPushNotificationHelper {
                 commit(editor);
             }
 
+            Bundle additionalExtras = new Bundle();
+            additionalExtras.putBundle("userInfo", bundle.getBundle("userInfo"));
+
+            notification.addExtras(additionalExtras);
+
             Notification info = notification.build();
             info.defaults |= Notification.DEFAULT_LIGHTS;
 
