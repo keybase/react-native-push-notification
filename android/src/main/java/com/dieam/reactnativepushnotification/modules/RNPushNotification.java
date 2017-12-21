@@ -215,7 +215,7 @@ public class RNPushNotification extends ReactContextBaseJavaModule implements Ac
           WritableMap map = Arguments.createMap();
           map.putString("identifier", Integer.toString(n.getId()));
 
-          Bundle extras = n.getNotifications().extras;
+          Bundle extras = n.getNotification().extras;
 
           CharSequence title = extras.getCharSequence(Notification.EXTRA_TITLE);
           map.putString("title", title.toString());
