@@ -223,7 +223,7 @@ public class RNPushNotification extends ReactContextBaseJavaModule implements Ac
             CharSequence text = extras.getCharSequence(Notification.EXTRA_TEXT);
             map.putString("body", text.toString());
 
-            Bundle userInfo = extra.getBundle("userInfo");
+            Bundle userInfo = extras.getBundle("userInfo");
             if (userInfo != null) {
                 map.putMap("userInfo", Arguments.fromBundle(userInfo));
             }
