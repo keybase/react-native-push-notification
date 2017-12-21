@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.service.notification.StatusBarNotification;
 
 import com.dieam.reactnativepushnotification.helpers.ApplicationBadgeHelper;
 import com.facebook.react.bridge.ActivityEventListener;
@@ -205,6 +206,24 @@ public class RNPushNotification extends ReactContextBaseJavaModule implements Ac
     @ReactMethod
     public void removeAllDeliveredNotifications() {
         mRNPushNotificationHelper.clearNotifications();
+    }
+
+    @ReactMethod
+    public void getDeliveredNotifications(Callback callback) {
+        StatusBarNotification[] notifications = mRNPushNotificationHelper.getActiveNotifications();
+
+        WritableArray arr = Arguments.createArray();
+
+        for (int i = 0; i < notifications.size(); i++) {
+          StatusBarNotification n = notifications[i];
+          WritableMap map = Arguments.createMap();
+          map.putString("identifier", n.getId());
+          // TODO: Fill in title, body, category, userInfo.
+
+          arr.pushMap(map);
+        }
+
+        callback.invoke(arr);
     }
 
     @ReactMethod

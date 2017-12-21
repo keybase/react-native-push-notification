@@ -317,13 +317,15 @@ Notifications.registerNotificationActions = function() {
 }
 
 Notifications.clearNotification = function() {
-	// Only available for Android
 	return this.callNative('clearNotification', arguments)
 }
 
 Notifications.removeAllDeliveredNotifications = function() {
-	// Only available for Android
 	return this.callNative('removeAllDeliveredNotifications', arguments)
+}
+
+Notifications.getDeliveredNotifications = function() {
+	return this.callNative('getDeliveredNotifications', arguments)
 }
 
 module.exports = Notifications;
