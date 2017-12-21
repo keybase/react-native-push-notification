@@ -104,20 +104,20 @@ NotificationsComponent.prototype.removeEventListener = function(type: string, ha
 	_notifHandlers.delete(type);
 }
 
-NotificationsComponent.prototype.registerNotificationActions = function(details: Object) {
-	RNPushNotification.registerNotificationActions(details);
-}
-
-NotificationsComponent.prototype.clearNotification = function(id: string) {
-	RNPushNotification.clearNotification(id)
-}
-
-NotificationsComponent.prototype.clearAllNotifications = function() {
-	RNPushNotification.clearAllNotifications()
+NotificationsComponent.prototype.removeAllDeliveredNotifications = function() {
+	RNPushNotification.removeAllDeliveredNotifications()
 }
 
 NotificationsComponent.prototype.getDeliveredNotifications = function(callback: Function) {
 	RNPushNotification.getDeliveredNotifications(callback)
+}
+
+NotificationsComponent.prototype.removeDeliveredNotifications = function(id: string) {
+	RNPushNotification.removeDeliveredNotifications(id)
+}
+
+NotificationsComponent.prototype.registerNotificationActions = function(details: Object) {
+	RNPushNotification.registerNotificationActions(details);
 }
 
 module.exports = {

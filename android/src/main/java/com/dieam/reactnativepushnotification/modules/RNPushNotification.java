@@ -198,21 +198,13 @@ public class RNPushNotification extends ReactContextBaseJavaModule implements Ac
     }
 
     @ReactMethod
-    public void removeDeliveredNotification(ReadableArray identifiers) {
-        for (int i = 0; i < identifiers.size(); i++) {
-            String id = identifiers.getString(i);
-            mRNPushNotificationHelper.clearNotification(id);
-        }
-    }
-
-    @ReactMethod
     public void removeAllDeliveredNotifications() {
-        mRNPushNotificationHelper.clearNotifications();
+        mRNPushNotificationHelper.removeAllDeliveredNotifications();
     }
 
     @ReactMethod
     public void getDeliveredNotifications(Callback callback) {
-        StatusBarNotification[] notifications = mRNPushNotificationHelper.getActiveNotifications();
+        StatusBarNotification[] notifications = mRNPushNotificationHelper.getDeliveredNotifications();
 
         WritableArray arr = Arguments.createArray();
 
@@ -226,6 +218,14 @@ public class RNPushNotification extends ReactContextBaseJavaModule implements Ac
         }
 
         callback.invoke(arr);
+    }
+
+    @ReactMethod
+    public void removeDeliveredNotifications(ReadableArray identifiers) {
+        for (int i = 0; i < identifiers.size(); i++) {
+            String id = identifiers.getString(i);
+            mRNPushNotificationHelper.removeDeliveredNotification(id);
+        }
     }
 
     @ReactMethod

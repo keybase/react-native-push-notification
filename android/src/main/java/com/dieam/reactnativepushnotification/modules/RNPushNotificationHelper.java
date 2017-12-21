@@ -400,25 +400,25 @@ public class RNPushNotificationHelper {
         }
     }
 
-    public StatusBarNotification[] getActiveNotifications() {
+    public void removeAllDeliveredNotifications() {
+        Log.i(LOG_TAG, "Clearing alerts from the notification centre");
+
+        NotificationManager notificationManager = notificationManager();
+        notificationManager.cancelAll();
+    }
+
+    public StatusBarNotification[] getDeliveredNotifications() {
         Log.i(LOG_TAG, "Getting active notifications");
 
         NotificationManager notificationManager = notificationManager();
         return notificationManager.getActiveNotifications();
     }
 
-    public void clearNotification(String id) {
+    public void removeDeliveredNotification(String id) {
         Log.i(LOG_TAG, "Clearing notification: " + id);
 
         NotificationManager notificationManager = notificationManager();
         notificationManager.cancel(Integer.parseInt(id));
-    }
-
-    public void clearNotifications() {
-        Log.i(LOG_TAG, "Clearing alerts from the notification centre");
-
-        NotificationManager notificationManager = notificationManager();
-        notificationManager.cancelAll();
     }
 
     public void cancelAllScheduledNotifications() {
