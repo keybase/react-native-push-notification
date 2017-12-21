@@ -219,7 +219,7 @@ public class RNPushNotification extends ReactContextBaseJavaModule implements Ac
         for (int i = 0; i < notifications.length; i++) {
           StatusBarNotification n = notifications[i];
           WritableMap map = Arguments.createMap();
-          map.putString("identifier", n.getId().toString());
+          map.putString("identifier", Integer.toString(n.getId()));
           // TODO: Fill in title, body, category, userInfo.
 
           arr.pushMap(map);
