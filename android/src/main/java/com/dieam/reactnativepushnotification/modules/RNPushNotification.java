@@ -13,6 +13,7 @@ import android.service.notification.StatusBarNotification;
 import com.dieam.reactnativepushnotification.helpers.ApplicationBadgeHelper;
 import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
@@ -20,6 +21,7 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 
 import java.util.HashMap;
@@ -214,10 +216,10 @@ public class RNPushNotification extends ReactContextBaseJavaModule implements Ac
 
         WritableArray arr = Arguments.createArray();
 
-        for (int i = 0; i < notifications.size(); i++) {
+        for (int i = 0; i < notifications.length; i++) {
           StatusBarNotification n = notifications[i];
           WritableMap map = Arguments.createMap();
-          map.putString("identifier", n.getId());
+          map.putString("identifier", n.getId().toString());
           // TODO: Fill in title, body, category, userInfo.
 
           arr.pushMap(map);
