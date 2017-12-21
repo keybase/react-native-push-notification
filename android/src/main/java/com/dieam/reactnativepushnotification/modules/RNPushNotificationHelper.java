@@ -404,7 +404,7 @@ public class RNPushNotificationHelper {
         Log.i(LOG_TAG, "Getting active notifications");
 
         NotificationManager notificationManager = notificationManager();
-        return notificationManager.getActiveNotifications()
+        return notificationManager.getActiveNotifications();
     }
 
     public void clearNotification(String id) {
