@@ -2,6 +2,7 @@ package com.dieam.reactnativepushnotification.modules;
 
 import android.app.Activity;
 import android.app.Application;
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -210,9 +211,19 @@ public class RNPushNotification extends ReactContextBaseJavaModule implements Ac
 
         for (int i = 0; i < notifications.length; i++) {
           StatusBarNotification n = notifications[i];
+
           WritableMap map = Arguments.createMap();
           map.putString("identifier", Integer.toString(n.getId()));
-          // TODO: Fill in title, body, category, userInfo.
+
+          Bundle extras = n.getNotifications().extras;
+
+          CharSequence title = extras.getCharSequence(Notification.EXTRA_TITLE);
+          map.putString("title", title.toString());
+
+          CharSequence text = extras.getCharSequence(Notification.EXTRA_TEXT);
+          map.putString("body", text.toString());
+
+          // TODO: Fill in userInfo.
 
           arr.pushMap(map);
         }
