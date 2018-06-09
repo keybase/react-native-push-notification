@@ -2,11 +2,13 @@ package com.dieam.reactnativepushnotification.modules;
 
 import android.app.Activity;
 import android.app.Application;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 
@@ -27,7 +29,15 @@ import java.util.Map;
 import java.util.Random;
 
 public class RNPushNotification extends ReactContextBaseJavaModule implements ActivityEventListener {
-    public static final String LOG_TAG = "RNPushNotification";// all logging should use this tag
+    public static final String LOG_TAG = "RNPushNotification"; // all logging should use this tag
+
+    // Hardcode these channel parameters for now; ideally, we'd be
+    // able to plumb this through from PushNotification.configure.
+
+    public static final String CHANNEL_ID = "keybase_channel_all";
+
+    private static final String CHANNEL_NAME = "Keybase";
+    private static final int CHANNEL_IMPORTANCE = NotificationManager.IMPORTANCE_DEFAULT;
 
     private RNPushNotificationHelper mRNPushNotificationHelper;
     private final Random mRandomNumberGenerator = new Random(System.currentTimeMillis());
@@ -45,6 +55,13 @@ public class RNPushNotification extends ReactContextBaseJavaModule implements Ac
         mJsDelivery = new RNPushNotificationJsDelivery(reactContext);
 
         registerNotificationsRegistration();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, CHANNEL_IMPORTANCE);
+            NotificationManager manager =
+                (NotificationManager) reactContext.getSystemService(reactContext.NOTIFICATION_SERVICE);
+            manager.createNotificationChannel(channel);
+        }
     }
 
     @Override
