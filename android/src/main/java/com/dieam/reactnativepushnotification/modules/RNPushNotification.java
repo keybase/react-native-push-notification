@@ -37,7 +37,7 @@ public class RNPushNotification extends ReactContextBaseJavaModule implements Ac
     public static final String CHANNEL_ID = "keybase_channel_all";
 
     private static final String CHANNEL_NAME = "Keybase";
-    private static final int CHANNEL_IMPORTANCE = NotificationManager.IMPORTANCE_DEFAULT;
+    private static final int CHANNEL_IMPORTANCE = NotificationManager.IMPORTANCE_HIGH;
 
     private RNPushNotificationHelper mRNPushNotificationHelper;
     private final Random mRandomNumberGenerator = new Random(System.currentTimeMillis());
