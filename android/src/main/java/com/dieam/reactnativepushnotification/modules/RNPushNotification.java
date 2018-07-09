@@ -8,6 +8,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.media.AudioAttributes;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
@@ -34,7 +36,9 @@ public class RNPushNotification extends ReactContextBaseJavaModule implements Ac
     // Hardcode these channel parameters for now; ideally, we'd be
     // able to plumb this through from PushNotification.configure.
 
-    public static final String CHANNEL_ID = "keybase_channel_all";
+    public static final String OLD_CHANNEL_ID = "keybase_channel_all";
+    public static final String CHANNEL_ID = "keybase_all";
+    public static final String CHANNEL_SOUNDNAME = "keybasemessage";
 
     private static final String CHANNEL_NAME = "Keybase";
     private static final int CHANNEL_IMPORTANCE = NotificationManager.IMPORTANCE_HIGH;
@@ -57,9 +61,23 @@ public class RNPushNotification extends ReactContextBaseJavaModule implements Ac
         registerNotificationsRegistration();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, CHANNEL_IMPORTANCE);
             NotificationManager manager =
                 (NotificationManager) reactContext.getSystemService(reactContext.NOTIFICATION_SERVICE);
+            // Delete old notification channel
+            manager.deleteNotificationChannel(OLD_CHANNEL_ID);
+
+            // Create notification channel
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, CHANNEL_IMPORTANCE);
+
+            // Add soundname
+            int resId = reactContext.getResources().getIdentifier(CHANNEL_SOUNDNAME, "raw", reactContext.getPackageName());
+            Uri soundUri = Uri.parse("android.resource://" + reactContext.getPackageName() + "/" + resId);
+            AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE)
+                    .build();
+            channel.setSound(soundUri, audioAttributes);
+
             manager.createNotificationChannel(channel);
         }
     }
