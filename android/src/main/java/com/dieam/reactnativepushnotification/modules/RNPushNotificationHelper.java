@@ -21,7 +21,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import android.media.AudioAttributes;
 
+import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReadableMap;
 
 import org.json.JSONArray;
@@ -35,16 +37,21 @@ import static com.dieam.reactnativepushnotification.modules.RNPushNotificationAt
 public class RNPushNotificationHelper {
     public static final String PREFERENCES_KEY = "rn_push_notification";
     private static final long DEFAULT_VIBRATION = 300L;
-    private static final String NOTIFICATION_CHANNEL_ID = "rn-push-notification-channel-id";
+    public static final String NOTIFICATION_CHANNEL_ID = "keybase_all";
+    private static final String OLD_NOTIFICATION_CHANNEL_ID = "keybase_channel_all";
+    private static final String CHANNEL_SOUNDNAME = "keybasemessage";
+    private static final String CHANNEL_NAME = "Keybase";
 
     private Context context;
+    private ReactApplicationContext reactContext;
     private final SharedPreferences scheduledNotificationsPersistence;
     private static final int ONE_MINUTE = 60 * 1000;
     private static final long ONE_HOUR = 60 * ONE_MINUTE;
     private static final long ONE_DAY = 24 * ONE_HOUR;
 
-    public RNPushNotificationHelper(Application context) {
+    public RNPushNotificationHelper(Application context, ReactApplicationContext reactContext) {
         this.context = context;
+        this.reactContext = reactContext;
         this.scheduledNotificationsPersistence = context.getSharedPreferences(RNPushNotificationHelper.PREFERENCES_KEY, Context.MODE_PRIVATE);
     }
 
@@ -68,6 +75,7 @@ public class RNPushNotificationHelper {
         int notificationID = Integer.parseInt(bundle.getString("id"));
 
         Intent notificationIntent = new Intent(context, RNPushNotificationPublisher.class);
+        notificationIntent.setPackage(context.getPackageName());
         notificationIntent.putExtra(RNPushNotificationPublisher.NOTIFICATION_ID, notificationID);
         notificationIntent.putExtras(bundle);
 
@@ -227,6 +235,7 @@ public class RNPushNotificationHelper {
             notification.setStyle(new NotificationCompat.BigTextStyle().bigText(bigText));
 
             Intent intent = new Intent(context, intentClass);
+            intent.setPackage(context.getPackageName());
             intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             bundle.putBoolean("userInteraction", true);
             intent.putExtra("notification", bundle);
@@ -274,7 +283,7 @@ public class RNPushNotificationHelper {
                     PendingIntent.FLAG_UPDATE_CURRENT);
 
             NotificationManager notificationManager = notificationManager();
-            checkOrCreateChannel(notificationManager);
+            this.checkOrCreateChannel(notificationManager);
 
             notification.setContentIntent(pendingIntent);
 
@@ -307,6 +316,7 @@ public class RNPushNotificationHelper {
                     }
 
                     Intent actionIntent = new Intent();
+                    actionIntent.setPackage(context.getPackageName());
                     actionIntent.setAction(context.getPackageName() + "." + action);
                     // Add "action" for later identifying which button gets pressed.
                     bundle.putString("action", action);
@@ -476,7 +486,7 @@ public class RNPushNotificationHelper {
     }
 
     private static boolean channelCreated = false;
-    private static void checkOrCreateChannel(NotificationManager manager) {
+    private void checkOrCreateChannel(NotificationManager manager) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O)
             return;
         if (channelCreated)
@@ -484,11 +494,25 @@ public class RNPushNotificationHelper {
         if (manager == null)
             return;
 
-        final CharSequence name = "rn-push-notification-channel";
-        int importance = NotificationManager.IMPORTANCE_DEFAULT;
+        // Delete old notification channel
+        manager.deleteNotificationChannel(OLD_NOTIFICATION_CHANNEL_ID);
+
+        final CharSequence name = CHANNEL_NAME;
+        int importance = NotificationManager.IMPORTANCE_HIGH;
         NotificationChannel channel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, name, importance);
         channel.enableLights(true);
         channel.enableVibration(true);
+
+        if (this.reactContext != null) {
+            // Add soundname
+            int resId = this.reactContext.getResources().getIdentifier(CHANNEL_SOUNDNAME, "raw", this.reactContext.getPackageName());
+            Uri soundUri = Uri.parse("android.resource://" + this.reactContext.getPackageName() + "/" + resId);
+            AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE)
+                    .build();
+            channel.setSound(soundUri, audioAttributes);
+        }
 
         manager.createNotificationChannel(channel);
         channelCreated = true;

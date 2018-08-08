@@ -3,6 +3,7 @@ package com.dieam.reactnativepushnotification.modules;
 import android.app.IntentService;
 import android.content.Intent;
 import android.util.Log;
+import android.support.v4.content.LocalBroadcastManager;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
@@ -33,6 +34,6 @@ public class RNPushNotificationRegistrationService extends IntentService {
     private void sendRegistrationToken(String token) {
         Intent intent = new Intent(this.getPackageName() + ".RNPushNotificationRegisteredToken");
         intent.putExtra("token", token);
-        sendBroadcast(intent);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 }

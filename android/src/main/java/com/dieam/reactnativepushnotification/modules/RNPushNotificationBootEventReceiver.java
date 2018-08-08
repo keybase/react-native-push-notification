@@ -25,7 +25,7 @@ public class RNPushNotificationBootEventReceiver extends BroadcastReceiver {
             Set<String> ids = sharedPreferences.getAll().keySet();
 
             Application applicationContext = (Application) context.getApplicationContext();
-            RNPushNotificationHelper rnPushNotificationHelper = new RNPushNotificationHelper(applicationContext);
+            RNPushNotificationHelper rnPushNotificationHelper = new RNPushNotificationHelper(applicationContext, null);
 
             for (String id : ids) {
                 try {

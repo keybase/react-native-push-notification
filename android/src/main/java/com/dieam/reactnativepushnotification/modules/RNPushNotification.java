@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.NotificationManagerCompat;
+import android.support.v4.content.LocalBroadcastManager;
 
 import com.dieam.reactnativepushnotification.helpers.ApplicationBadgeHelper;
 import com.facebook.react.bridge.ActivityEventListener;
@@ -35,6 +36,8 @@ public class RNPushNotification extends ReactContextBaseJavaModule implements Ac
     private final Random mRandomNumberGenerator = new Random(System.currentTimeMillis());
     private RNPushNotificationJsDelivery mJsDelivery;
 
+    private Bundle savedBundle = null;
+
     public RNPushNotification(ReactApplicationContext reactContext) {
         super(reactContext);
 
@@ -42,7 +45,7 @@ public class RNPushNotification extends ReactContextBaseJavaModule implements Ac
 
         Application applicationContext = (Application) reactContext.getApplicationContext();
         // The @ReactNative methods use this
-        mRNPushNotificationHelper = new RNPushNotificationHelper(applicationContext);
+        mRNPushNotificationHelper = new RNPushNotificationHelper(applicationContext, reactContext);
         // This is used to delivery callbacks to JS
         mJsDelivery = new RNPushNotificationJsDelivery(reactContext);
 
@@ -62,6 +65,14 @@ public class RNPushNotification extends ReactContextBaseJavaModule implements Ac
     }
 
     public void onNewIntent(Intent intent) {
+        if(intent.hasExtra("google.message_id")){
+            Bundle bundle = intent.getExtras();
+            bundle.putBoolean("foreground", false);
+            intent.putExtra("notification", bundle);
+            this.savedBundle =  bundle;
+            mJsDelivery.notifyNotification(bundle);
+        }
+
         if (intent.hasExtra("notification")) {
             Bundle bundle = intent.getBundleExtra("notification");
             bundle.putBoolean("foreground", false);
@@ -73,7 +84,7 @@ public class RNPushNotification extends ReactContextBaseJavaModule implements Ac
     private void registerNotificationsRegistration() {
         IntentFilter intentFilter = new IntentFilter(getReactApplicationContext().getPackageName() + ".RNPushNotificationRegisteredToken");
 
-        getReactApplicationContext().registerReceiver(new BroadcastReceiver() {
+        LocalBroadcastManager.getInstance(getReactApplicationContext()).registerReceiver(new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 String token = intent.getStringExtra("token");
@@ -92,7 +103,7 @@ public class RNPushNotification extends ReactContextBaseJavaModule implements Ac
             String action = actions.getString(i);
             intentFilter.addAction(getReactApplicationContext().getPackageName() + "." + action);
         }
-        getReactApplicationContext().registerReceiver(new BroadcastReceiver() {
+        LocalBroadcastManager.getInstance(getReactApplicationContext()).registerReceiver(new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 Bundle bundle = intent.getBundleExtra("notification");
@@ -156,7 +167,18 @@ public class RNPushNotification extends ReactContextBaseJavaModule implements Ac
         Activity activity = getCurrentActivity();
         if (activity != null) {
             Intent intent = activity.getIntent();
-            Bundle bundle = intent.getBundleExtra("notification");
+            Bundle bundle = null;
+
+             if (intent.hasExtra("notification")) {
+                bundle = intent.getBundleExtra("notification");
+            } else if (intent.hasExtra("google.message_id")) {
+                bundle = intent.getExtras();
+            }
+             if (this.savedBundle != null){
+                bundle = savedBundle;
+                this.savedBundle = null;
+            }
+
             if (bundle != null) {
                 bundle.putBoolean("foreground", false);
                 String bundleString = mJsDelivery.convertJSON(bundle);
