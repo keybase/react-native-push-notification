@@ -73,6 +73,7 @@ public class RNPushNotificationHelper {
         int notificationID = Integer.parseInt(bundle.getString("id"));
 
         Intent notificationIntent = new Intent(context, RNPushNotificationPublisher.class);
+        notificationIntent.setPackage(context.getPackageName());
         notificationIntent.putExtra(RNPushNotificationPublisher.NOTIFICATION_ID, notificationID);
         notificationIntent.putExtras(bundle);
 
@@ -276,6 +277,7 @@ public class RNPushNotificationHelper {
             notification.setStyle(new NotificationCompat.BigTextStyle().bigText(bigText));
 
             Intent intent = new Intent(context, intentClass);
+            intent.setPackage(context.getPackageName());
             intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             bundle.putBoolean("userInteraction", true);
             intent.putExtra("notification", bundle);
@@ -359,6 +361,7 @@ public class RNPushNotificationHelper {
                     }
 
                     Intent actionIntent = new Intent(context, intentClass);
+                    actionIntent.setPackage(context.getPackageName());
                     actionIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     actionIntent.setAction(context.getPackageName() + "." + action);
 
