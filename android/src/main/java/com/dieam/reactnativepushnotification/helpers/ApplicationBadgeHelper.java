@@ -76,7 +76,7 @@ public class ApplicationBadgeHelper {
 
     private boolean isLegacySamsungLauncher(Context context) {
         Intent intent = new Intent(Intent.ACTION_MAIN);
-        intent.setPackage(context.getPackageName())
+        intent.setPackage(context.getPackageName());
         intent.addCategory(Intent.CATEGORY_HOME);
         ResolveInfo resolveInfo = context.getPackageManager().resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);
 
